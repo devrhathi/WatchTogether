@@ -18,6 +18,11 @@ export const styles = StyleSheet.create({
     margin: 6,
   },
 
+  errText: {
+    fontSize: 16,
+    color: "red",
+  },
+
   textInput: {
     borderColor: "black",
     borderWidth: 1.5,

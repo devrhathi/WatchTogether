@@ -10,6 +10,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function ChatScreen() {
-  return <View style={styles.container}></View>;
+export default function ChatScreen({ createdRoomID }) {
+  return (
+    <View style={styles.container}>
+      <Text>{createdRoomID}</Text>
+    </View>
+  );
 }

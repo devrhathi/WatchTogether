@@ -3,28 +3,36 @@ import { Text, View, TextInput, TouchableOpacity } from "react-native";
 import { styles } from "./HomeScreenStyles";
 
 export default function HomeScreen({ navigation }) {
-  const [urlText, setUrlText] = useState("");
+  const [roomIDText, setRoomIDText] = useState("");
+  const [errText, setErrText] = useState("");
 
-  const handleGoButton = () => {
-    navigation.navigate("MainScreen", {
-      urlText: urlText,
-    });
+  const handleJoinButton = () => {
+    let trailingVideoID = roomIDText.trim().slice(-11);
+
+    if (trailingVideoID === "" || !trailingVideoID) {
+      setErrText("Please Enter Video URL");
+    } else {
+      navigation.navigate("MainScreen", {
+        roomIDText: trailingVideoID,
+      });
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titleText}> Enter URL : </Text>
+      <Text style={styles.titleText}> Enter Room ID To Join </Text>
+      {errText.length > 0 ? (
+        <Text style={styles.errText}>{errText} </Text>
+      ) : null}
       <TextInput
         style={styles.textInput}
-        placeholder="ex : https://youtube.com/url"
-        value={urlText}
-        onChangeText={setUrlText}
+        value={roomIDText}
+        placeholder="Or create a room..."
+        onChangeText={setRoomIDText}
       />
       <View style={styles.buttonsView}>
-        <TouchableOpacity style={styles.buttons}>
-          <Text style={styles.buttonText} onPress={handleGoButton}>
-            Go
-          </Text>
+        <TouchableOpacity style={styles.buttons} onPress={handleJoinButton}>
+          <Text style={styles.buttonText}>Join Room</Text>
         </TouchableOpacity>
       </View>
     </View>
