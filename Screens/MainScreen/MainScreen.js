@@ -5,8 +5,8 @@ import ChatScreen from "./ChatScreen/ChatScreen";
 import { io } from "socket.io-client";
 
 export default function MainScreen({ route, navigation }) {
-  const { roomIDText } = route.params;
-  const [createdRoomID, setCreatedRoomID] = useState(null);
+  // const { roomIDText } = route.params;
+  const roomIDText = "tqyquiHa981";
   const socket = io(`http://192.168.1.7:8000/`);
   // const socket = io(`http://localhost:8000/`);
 
@@ -27,7 +27,7 @@ export default function MainScreen({ route, navigation }) {
   return (
     <View style={styles.container}>
       <VideoPlayerScreen />
-      <ChatScreen createdRoomID={createdRoomID} />
+      <ChatScreen createdRoomID={roomIDText} />
     </View>
   );
 }

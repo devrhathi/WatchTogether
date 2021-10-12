@@ -6,11 +6,18 @@ export default function HomeScreen({ navigation }) {
   const [roomIDText, setRoomIDText] = useState("");
   const [errText, setErrText] = useState("");
 
+  const clearError = () => {
+    setTimeout(() => {
+      setErrText("");
+    }, 5000);
+  };
+
   const handleJoinButton = () => {
     let trailingVideoID = roomIDText.trim().slice(-11);
 
     if (trailingVideoID === "" || !trailingVideoID) {
       setErrText("Please Enter Video URL");
+      clearError();
     } else {
       navigation.navigate("MainScreen", {
         roomIDText: trailingVideoID,
