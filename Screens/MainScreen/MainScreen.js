@@ -2,18 +2,17 @@ import React, { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import VideoPlayerScreen from "./VideoPlayerScreen/VideoPlayerScreen";
 import ChatScreen from "./ChatScreen/ChatScreen";
-import { io } from "socket.io-client";
+import { socket } from "../../SocketContext";
 
 export default function MainScreen({ route, navigation }) {
   // const { roomIDText } = route.params;
-  const roomIDText = "tqyquiHa981";
-  const socket = io(`http://192.168.1.7:8000/`);
-  // const socket = io(`http://localhost:8000/`);
+  const roomIDText = "3vUtRRZG0xY";
+  const [currSocketID, setCurrSocketID] = useState("");
 
   useEffect(() => {
-    //after socket connection, emit a join room request along with the video id to join
+    //after socket connection, emit a join room request along with the video id to join, backend executes the third arguement which is callback and passes the socket id to it
     socket.emit("joinRoom", roomIDText, (socketID) => {
-      console.log(socketID, "Joined the room");
+      setCurrSocketID(socketID);
     });
   }, []);
 
@@ -27,7 +26,7 @@ export default function MainScreen({ route, navigation }) {
   return (
     <View style={styles.container}>
       <VideoPlayerScreen />
-      <ChatScreen createdRoomID={roomIDText} />
+      <ChatScreen currRoomID={roomIDText} currSocketID={currSocketID} />
     </View>
   );
 }
