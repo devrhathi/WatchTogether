@@ -6,7 +6,7 @@ import { socket } from "../../SocketContext";
 
 export default function MainScreen({ route, navigation }) {
   // const { roomIDText } = route.params;
-  const roomIDText = "3vUtRRZG0xY";
+  const roomIDText = "DFWvyP6BOis";
   const [currSocketID, setCurrSocketID] = useState("");
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export default function MainScreen({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <VideoPlayerScreen />
+      <VideoPlayerScreen currRoomID={roomIDText} />
       <ChatScreen currRoomID={roomIDText} currSocketID={currSocketID} />
     </View>
   );

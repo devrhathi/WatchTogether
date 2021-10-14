@@ -5,6 +5,7 @@ export const styles = StyleSheet.create({
     justifyContent: "flex-end",
     backgroundColor: "#FFFFFF",
     width: "100%",
+    // height: 500,
     flex: 7,
   },
 
@@ -17,8 +18,12 @@ export const styles = StyleSheet.create({
   },
 
   chatContainer: {
+    // borderColor: "red",
+    // borderWidth: 4,
+    flexDirection: "row",
     flex: 1,
-    justifyContent: "flex-end",
+    alignItems: "flex-end",
+    // overflow: "hidden",
   },
 
   chatText: {
