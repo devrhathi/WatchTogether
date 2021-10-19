@@ -6,6 +6,7 @@ import {
   FlatList,
   KeyboardAvoidingView,
   Keyboard,
+  TouchableOpacity,
 } from "react-native";
 import { KeyboardAwareFlatList } from "react-native-keyboard-aware-scroll-view";
 import { socket } from "../../../SocketContext";
@@ -23,7 +24,6 @@ export default function ChatScreen({ currRoomID, currSocketID }) {
 
     Keyboard.addListener("keyboardDidShow", () => {
       if (flatListRef) {
-        console.log("popped up");
         flatListRef.current.scrollToEnd();
       }
     });
@@ -75,13 +75,18 @@ export default function ChatScreen({ currRoomID, currSocketID }) {
           }}
         />
       </View>
-      <TextInput
-        style={styles.textInput}
-        placeholder="Enter a message..."
-        value={msg}
-        onChangeText={setMsg}
-        onSubmitEditing={sendMessage}
-      />
+      <View style={styles.sendMessageContainer}>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Enter a message..."
+          value={msg}
+          onChangeText={setMsg}
+          onSubmitEditing={sendMessage}
+        />
+        <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
+          <Text>Send</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }

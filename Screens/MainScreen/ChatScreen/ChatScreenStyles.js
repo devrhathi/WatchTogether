@@ -5,11 +5,11 @@ export const styles = StyleSheet.create({
     justifyContent: "flex-end",
     backgroundColor: "#FFFFFF",
     width: "100%",
-    // height: 500,
     flex: 7,
   },
 
   textInput: {
+    flex: 5,
     borderColor: "black",
     borderWidth: 1.5,
     margin: 4,
@@ -36,6 +36,7 @@ export const styles = StyleSheet.create({
     alignSelf: "flex-end",
     margin: 8,
     padding: 6,
+    marginLeft: 68,
   },
   receiverChatBubble: {
     borderRadius: 8,
@@ -43,5 +44,19 @@ export const styles = StyleSheet.create({
     alignSelf: "baseline",
     margin: 8,
     padding: 6,
+    marginRight: 68,
+  },
+
+  sendMessageContainer: {
+    flexDirection: "row",
+  },
+
+  sendButton: {
+    flex: 1,
+    padding: 6,
+    margin: 8,
+    alignSelf: "stretch",
+    backgroundColor: "skyblue",
+    justifyContent: "center",
   },
 });

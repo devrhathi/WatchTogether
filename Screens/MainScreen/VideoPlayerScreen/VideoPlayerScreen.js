@@ -1,25 +1,40 @@
-import React, { useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import YoutubePlayer from "react-native-youtube-iframe";
+import { socket } from "../../../SocketContext";
+import { styles } from "./VideoPlayerStyles";
 
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 45,
-    // backgroundColor: "#000000",
-    width: "100%",
-    height: 230,
-    // flex: 2.8,
-  },
-});
+//Player Controls
+import { Entypo } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 
-export default function VideoPlayerScreen({ currRoomID }) {
-  const tellStateChange = (e) => {
-    console.log("state changed");
-  };
+export default function VideoPlayerScreen({ currRoomID, currSocketID }) {
+  const youtubePlayerRef = useRef();
+  const [isPlaying, setIsPlaying] = useState(false);
 
   return (
     <View style={styles.container}>
-      <YoutubePlayer videoId={currRoomID} width={"100%"} height={"100%"} />
+      <YoutubePlayer
+        ref={youtubePlayerRef}
+        videoId={currRoomID}
+        width={"100%"}
+        height={"86%"}
+        initialPlayerParams={{ controls: false }}
+        play={isPlaying}
+      />
+      <View style={styles.videoControlsContainer}>
+        <TouchableOpacity onPress={() => setIsPlaying(true)}>
+          <Entypo name="controller-play" size={30} color="black" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setIsPlaying(false)}>
+          <FontAwesome name="pause" size={26} color="black" />
+        </TouchableOpacity>
+
+        <View style={styles.videoSlider}>
+          <View style={styles.videoSliderTrackerBox} />
+          <View style={styles.videoSliderHorizontalLine} />
+        </View>
+      </View>
     </View>
   );
 }

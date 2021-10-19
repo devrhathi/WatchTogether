@@ -25,7 +25,7 @@ export default function MainScreen({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <VideoPlayerScreen currRoomID={roomIDText} />
+      <VideoPlayerScreen currRoomID={roomIDText} currSocketID={currSocketID} />
       <ChatScreen currRoomID={roomIDText} currSocketID={currSocketID} />
     </View>
   );
