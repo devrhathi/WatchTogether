@@ -30,7 +30,6 @@ export const styles = StyleSheet.create({
 
   videoSliderTrackerBox: {
     position: "absolute",
-    left: "0%",
     width: 10,
     height: "100%",
     backgroundColor: "skyblue",
