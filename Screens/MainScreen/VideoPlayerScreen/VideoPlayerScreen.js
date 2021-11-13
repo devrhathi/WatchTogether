@@ -20,8 +20,32 @@ export default function VideoPlayerScreen({ currRoomID, currSocketID }) {
   const sliderRef = useRef();
   const [videoDuration, setVideoDuration] = useState(0);
   const [timeElapsed, setTimeElapsed] = useState(0);
-  const [sliderLeft, setSliderLeft] = useState(0);
-  const [sliderIntervalID, setSliderIntervalID] = useState();
+  const [sliderInterval, setSliderInterval] = useState(0);
+
+  useEffect(() => {
+    socket.on("playVideo", () => {
+      playVideo();
+    });
+
+    socket.on("pauseVideo", (timeElapsedOnOtherDevice) => {
+      setTimeElapsed(timeElapsedOnOtherDevice);
+      pauseVideo();
+    });
+  }, []);
+
+  useEffect(() => {
+    if (isPlaying) {
+      if (sliderRef) {
+        setSliderInterval(
+          setInterval(() => {
+            setTimeElapsed((prev) => prev + 1);
+          }, 1000)
+        );
+      }
+    } else {
+      clearInterval(sliderInterval);
+    }
+  }, [isPlaying]);
 
   const initializeVideoSlider = () => {
     if (youtubePlayerRef && youtubePlayerRef.current) {
@@ -31,17 +55,12 @@ export default function VideoPlayerScreen({ currRoomID, currSocketID }) {
     }
   };
 
-  const startVideoSlider = () => {
-    if (sliderRef) {
-      let tempTime = timeElapsed;
-      let sliderInterval = setInterval(() => {
-        //move slider to right, called every second
-        tempTime++;
-        setSliderLeft((tempTime * 100) / videoDuration);
-        setTimeElapsed(tempTime);
-      }, 1000);
-      setSliderIntervalID(sliderInterval);
-    }
+  const playVideo = () => {
+    setIsPlaying(true);
+  };
+
+  const pauseVideo = () => {
+    setIsPlaying(false);
   };
 
   return (
@@ -58,16 +77,16 @@ export default function VideoPlayerScreen({ currRoomID, currSocketID }) {
       <View style={styles.videoControlsContainer}>
         <TouchableOpacity
           onPress={() => {
-            setIsPlaying(true);
-            startVideoSlider();
+            playVideo();
+            socket.emit("playClicked", currRoomID);
           }}
         >
           <Entypo name="controller-play" size={30} color="black" />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            setIsPlaying(false);
-            clearInterval(sliderIntervalID);
+            pauseVideo();
+            socket.emit("pauseClicked", { timeElapsed, currRoomID });
           }}
         >
           <FontAwesome name="pause" size={26} color="black" />
@@ -75,7 +94,10 @@ export default function VideoPlayerScreen({ currRoomID, currSocketID }) {
 
         <TouchableOpacity style={styles.videoSlider}>
           <View
-            style={{ ...styles.videoSliderTrackerBox, left: `${sliderLeft}%` }}
+            style={{
+              ...styles.videoSliderTrackerBox,
+              left: `${((timeElapsed * 100) / videoDuration) * 8}%`,
+            }}
             ref={sliderRef}
           />
           <View style={styles.videoSliderHorizontalLine} />
