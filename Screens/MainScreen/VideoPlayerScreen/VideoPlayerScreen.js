@@ -21,15 +21,21 @@ export default function VideoPlayerScreen({ currRoomID, currSocketID }) {
   const [videoDuration, setVideoDuration] = useState(0);
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [sliderInterval, setSliderInterval] = useState(0);
+  const [widthOfSlider, setWidthOfSlider] = useState(1);
 
   useEffect(() => {
     socket.on("playVideo", () => {
       playVideo();
     });
 
-    socket.on("pauseVideo", (timeElapsedOnOtherDevice) => {
-      setTimeElapsed(timeElapsedOnOtherDevice);
+    socket.on("pauseVideo", (timeElapsedOnOtherDevice, duration) => {
       pauseVideo();
+      seekToSeconds(duration);
+      setTimeElapsed(timeElapsedOnOtherDevice);
+    });
+
+    socket.on("seekVideo", (videoDurationSeekTo) => {
+      seekToSeconds(videoDurationSeekTo);
     });
   }, []);
 
@@ -63,6 +69,13 @@ export default function VideoPlayerScreen({ currRoomID, currSocketID }) {
     setIsPlaying(false);
   };
 
+  const seekToSeconds = (secs) => {
+    if (youtubePlayerRef && youtubePlayerRef.current) {
+      youtubePlayerRef.current.seekTo(secs);
+      setTimeElapsed(Math.round(secs));
+    }
+  };
+
   return (
     <View style={styles.container}>
       <YoutubePlayer
@@ -77,7 +90,6 @@ export default function VideoPlayerScreen({ currRoomID, currSocketID }) {
       <View style={styles.videoControlsContainer}>
         <TouchableOpacity
           onPress={() => {
-            playVideo();
             socket.emit("playClicked", currRoomID);
           }}
         >
@@ -85,22 +97,44 @@ export default function VideoPlayerScreen({ currRoomID, currSocketID }) {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            pauseVideo();
-            socket.emit("pauseClicked", { timeElapsed, currRoomID });
+            youtubePlayerRef?.current?.getCurrentTime().then((duration) =>
+              socket.emit("pauseClicked", {
+                timeElapsed,
+                currRoomID,
+                duration,
+              })
+            );
           }}
         >
           <FontAwesome name="pause" size={26} color="black" />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.videoSlider}>
+        <TouchableOpacity
+          style={styles.videoSlider}
+          onPressOut={(e) => {
+            //grab percentage of slider area clicked
+            let percentOfAreaClicked =
+              (e.nativeEvent.locationX * 100) / widthOfSlider;
+            let videoDurationSeekTo =
+              (percentOfAreaClicked * videoDuration) / 100;
+
+            //emit the event that we are seeking the video
+            socket.emit("videoSeeked", { videoDurationSeekTo, currRoomID });
+          }}
+        >
           <View
             style={{
               ...styles.videoSliderTrackerBox,
-              left: `${((timeElapsed * 100) / videoDuration) * 8}%`,
+              left: `${(timeElapsed * 100) / videoDuration}%`,
             }}
             ref={sliderRef}
           />
-          <View style={styles.videoSliderHorizontalLine} />
+          <View
+            style={styles.videoSliderHorizontalLine}
+            onLayout={(e) => {
+              setWidthOfSlider(e.nativeEvent.layout.width);
+            }}
+          />
         </TouchableOpacity>
       </View>
     </View>
